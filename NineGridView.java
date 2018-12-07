@@ -1,4 +1,4 @@
-package com.realcloud.view;
+package com.zack.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -178,7 +178,7 @@ public class NineGridView<T> extends ViewGroup {
         int imageWidth = (right - getPaddingRight() - getPaddingLeft()  - left - mGap) / 2;
         for (int i= 0; i < getNeedShowCount(mImageDatas.size()) ;i++){
             int imageleft = left + getPaddingLeft() + (i%2) * (imageWidth + mGap);
-            int imageTop = top + getPaddingTop() + (i%2) * (imageWidth + mGap);
+            int imageTop = top + getPaddingTop() + (i/2) * (imageWidth + mGap);
             ImageView imageView = (ImageView) getChildAt(i);
             imageView.layout(imageleft,imageTop,imageleft + imageWidth,imageTop + imageWidth);
             if (imageAdapter != null){
@@ -198,7 +198,7 @@ public class NineGridView<T> extends ViewGroup {
         int imageWidth = (right - getPaddingRight() - getPaddingLeft()  - left - 2*mGap) / 3;
         for (int i= 0; i < getNeedShowCount(mImageDatas.size()) ;i++){
             int imageleft = left + getPaddingLeft() + (i%3) * (imageWidth + mGap);
-            int imageTop = top + getPaddingTop() + (i%3) * (imageWidth + mGap);
+            int imageTop = top + getPaddingTop() + (i/3) * (imageWidth + mGap);
             ImageView imageView = (ImageView) getChildAt(i);
             imageView.layout(imageleft,imageTop,imageleft + imageWidth,imageTop + imageWidth);
             if (imageAdapter != null){
