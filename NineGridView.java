@@ -74,6 +74,7 @@ public class NineGridView<T> extends ViewGroup {
             imageView = imageViews.get(position);
         } else {
             imageView = new ImageView(getContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageViews.add(imageView);
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -93,7 +94,7 @@ public class NineGridView<T> extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int totalWidth = width - getPaddingLeft() - getPaddingRight();
-        int height =  width - getPaddingLeft() - getPaddingRight();
+        int height =  width - getPaddingTop() - getPaddingBottom();
         if (mImageDatas != null && mImageDatas.size() > 0){
             switch (mImageDatas.size()){
                 case 2:
@@ -117,71 +118,53 @@ public class NineGridView<T> extends ViewGroup {
         if (mImageDatas == null) return;
         switch (getNeedShowCount(mImageDatas.size())){
             case 1:
-                layoutSingleView(l,t,r,b);
+                layoutSingleView();
                 break;
             case 2:
-                layoutTwoView(l,t,r,b);
+                layoutTwoView();
                 break;
             case 4:
-                layoutFourView(l,t,r,b);
+                layoutFourView();
                 break;
             default:
-                layoutNormalView(l,t,r,b);
+                layoutNormalView();
                 break;
         }
     }
 
     /**
      * 展示一个图片
-     * @param left 左边
-     * @param top 上边
-     * @param right 右边
-     * @param bottom 底部
      */
-    private void layoutSingleView(int left,int top,int right,int bottom){
-        int layoutHeight = bottom - top;
-        int layoutWidth = right - left;
+    private void layoutSingleView(){
         ImageView imageView = (ImageView) getChildAt(0);
-        imageView.layout(getPaddingLeft(),getPaddingTop(),layoutWidth - getPaddingRight(),layoutHeight - getPaddingBottom());
+        imageView.layout(getPaddingLeft(),getPaddingTop(),getMeasuredWidth() - getPaddingRight(),getMeasuredHeight() - getPaddingBottom());
         if (imageAdapter != null){
             imageAdapter.setImage(mImageDatas.get(0),imageView);
         }
     }
 
     /**
-     * 展示二个图片
-     * @param left 左边
-     * @param top 上边
-     * @param right 右边
-     * @param bottom 底部
+     * 一行展示二个图片
      */
-    private void layoutTwoView(int left,int top,int right,int bottom) {
-        int layoutWidth = right - left;
-        int imageleft = getPaddingLeft();
-        int imageTop = getPaddingTop();
-        int imageWidth = (layoutWidth - getPaddingRight() - getPaddingLeft() - mGap) / 2;
+    private void layoutTwoView() {
+        int imageWidth = (getMeasuredWidth() - getPaddingRight() - getPaddingLeft() - mGap) / 2;
         ImageView imageView1 = (ImageView) getChildAt(0);
-        imageView1.layout(imageleft,imageTop,imageleft+imageWidth,imageTop + imageWidth);
+        imageView1.layout(getPaddingLeft(),getPaddingTop(),getPaddingLeft()+imageWidth,getPaddingTop() + imageWidth);
         if (imageAdapter != null){
             imageAdapter.setImage(mImageDatas.get(0),imageView1);
         }
         ImageView imageView2 = (ImageView) getChildAt(1);
-        imageView2.layout(imageleft+imageWidth + mGap ,imageTop,imageleft+imageWidth*2+mGap,imageTop + imageWidth);
+        imageView2.layout(getPaddingLeft()+imageWidth + mGap ,getPaddingTop(),getPaddingLeft()+imageWidth*2+mGap,getPaddingTop() + imageWidth);
         if (imageAdapter != null){
             imageAdapter.setImage(mImageDatas.get(1),imageView2);
         }
     }
 
     /**
-     * 展示四个图片
-     * @param left 左边
-     * @param top 上边
-     * @param right 右边
-     * @param bottom 底部
+     * 两行每行2个展示四个图片
      */
-    private void layoutFourView(int left,int top,int right,int bottom){
-        int layoutWidth = right - left;
-        int imageWidth = (layoutWidth - getPaddingRight() - getPaddingLeft() - mGap) / 2;
+    private void layoutFourView(){
+        int imageWidth = (getMeasuredWidth() - getPaddingRight() - getPaddingLeft() - mGap) / 2;
         for (int i= 0; i < getNeedShowCount(mImageDatas.size()) ;i++){
             int imageleft = getPaddingLeft() + (i%2) * (imageWidth + mGap);
             int imageTop = getPaddingTop() + (i/2) * (imageWidth + mGap);
@@ -194,15 +177,10 @@ public class NineGridView<T> extends ViewGroup {
     }
 
     /**
-     * 展示通用九宫格图片
-     * @param left 左边
-     * @param top 上边
-     * @param right 右边
-     * @param bottom 底部
+     * 每行3个展示通用九宫格图片
      */
-    private void layoutNormalView(int left,int top,int right,int bottom){
-        int layoutWidth = right - left;
-        int imageWidth = (layoutWidth - getPaddingRight() - getPaddingLeft() - 2*mGap) / 3;
+    private void layoutNormalView(){
+        int imageWidth = (getMeasuredWidth() - getPaddingRight() - getPaddingLeft() - 2*mGap) / 3;
         for (int i= 0; i < getNeedShowCount(mImageDatas.size()) ;i++){
             int imageleft = getPaddingLeft() + (i%3) * (imageWidth + mGap);
             int imageTop = getPaddingTop() + (i/3) * (imageWidth + mGap);
