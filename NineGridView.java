@@ -1,4 +1,4 @@
-package com.zack.view;
+package com.realcloud.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -30,7 +30,9 @@ public class NineGridView<T> extends ViewGroup {
 
     public static final int DEFAULT_MAX_IMAGE = 9;//最多默认展示九张图片
 
-    private int mGap;//图片之间的距离
+    public static final int DEFAULT_IMAGE_GAP = 15;//默认图片间隔
+
+    private int mGap=DEFAULT_IMAGE_GAP;//图片之间的距离
 
     private List<T> mImageDatas;//图片存储数据
 
@@ -137,8 +139,10 @@ public class NineGridView<T> extends ViewGroup {
      * @param bottom 底部
      */
     private void layoutSingleView(int left,int top,int right,int bottom){
+        int layoutHeight = bottom - top;
+        int layoutWidth = right - left;
         ImageView imageView = (ImageView) getChildAt(0);
-        imageView.layout(left + getPaddingLeft(),top+getPaddingTop(),right - getPaddingRight(),bottom - getPaddingBottom());
+        imageView.layout(getPaddingLeft(),getPaddingTop(),layoutWidth - getPaddingRight(),layoutHeight - getPaddingBottom());
         if (imageAdapter != null){
             imageAdapter.setImage(mImageDatas.get(0),imageView);
         }
@@ -152,9 +156,10 @@ public class NineGridView<T> extends ViewGroup {
      * @param bottom 底部
      */
     private void layoutTwoView(int left,int top,int right,int bottom) {
-        int imageleft = left + getPaddingLeft();
-        int imageTop = top + getPaddingTop();
-        int imageWidth = (right - getPaddingRight() - getPaddingLeft()  - left - mGap) / 2;
+        int layoutWidth = right - left;
+        int imageleft = getPaddingLeft();
+        int imageTop = getPaddingTop();
+        int imageWidth = (layoutWidth - getPaddingRight() - getPaddingLeft() - mGap) / 2;
         ImageView imageView1 = (ImageView) getChildAt(0);
         imageView1.layout(imageleft,imageTop,imageleft+imageWidth,imageTop + imageWidth);
         if (imageAdapter != null){
@@ -175,10 +180,11 @@ public class NineGridView<T> extends ViewGroup {
      * @param bottom 底部
      */
     private void layoutFourView(int left,int top,int right,int bottom){
-        int imageWidth = (right - getPaddingRight() - getPaddingLeft()  - left - mGap) / 2;
+        int layoutWidth = right - left;
+        int imageWidth = (layoutWidth - getPaddingRight() - getPaddingLeft() - mGap) / 2;
         for (int i= 0; i < getNeedShowCount(mImageDatas.size()) ;i++){
-            int imageleft = left + getPaddingLeft() + (i%2) * (imageWidth + mGap);
-            int imageTop = top + getPaddingTop() + (i/2) * (imageWidth + mGap);
+            int imageleft = getPaddingLeft() + (i%2) * (imageWidth + mGap);
+            int imageTop = getPaddingTop() + (i/2) * (imageWidth + mGap);
             ImageView imageView = (ImageView) getChildAt(i);
             imageView.layout(imageleft,imageTop,imageleft + imageWidth,imageTop + imageWidth);
             if (imageAdapter != null){
@@ -195,10 +201,11 @@ public class NineGridView<T> extends ViewGroup {
      * @param bottom 底部
      */
     private void layoutNormalView(int left,int top,int right,int bottom){
-        int imageWidth = (right - getPaddingRight() - getPaddingLeft()  - left - 2*mGap) / 3;
+        int layoutWidth = right - left;
+        int imageWidth = (layoutWidth - getPaddingRight() - getPaddingLeft() - 2*mGap) / 3;
         for (int i= 0; i < getNeedShowCount(mImageDatas.size()) ;i++){
-            int imageleft = left + getPaddingLeft() + (i%3) * (imageWidth + mGap);
-            int imageTop = top + getPaddingTop() + (i/3) * (imageWidth + mGap);
+            int imageleft = getPaddingLeft() + (i%3) * (imageWidth + mGap);
+            int imageTop = getPaddingTop() + (i/3) * (imageWidth + mGap);
             ImageView imageView = (ImageView) getChildAt(i);
             imageView.layout(imageleft,imageTop,imageleft + imageWidth,imageTop + imageWidth);
             if (imageAdapter != null){
