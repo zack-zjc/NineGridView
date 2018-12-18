@@ -8,7 +8,7 @@ import java.util.Map;
  * NineVideoPlayer抽象接口
  * ref : niceVideoPlayer
  */
-public interface INineGridVideoPlayer {
+public interface INineGridVideoPlayer extends IDragCallback{
 
     /**
      * 播放错误

@@ -29,6 +29,10 @@ import android.widget.FrameLayout;
 
 public class NineGridDragFrameLayout extends FrameLayout {
 
+    //最短触发callback事件的距离
+    private static final int DEFAULT_CALLBACK_DISTANCE = 300;
+    //拖拽事件的callback
+    private IDragCallback callback;
     //draghelper
     private ViewDragHelper viewDragHelper;
     //初始的view的x
@@ -56,7 +60,7 @@ public class NineGridDragFrameLayout extends FrameLayout {
         @Override
         public void run() {
             if (canResponseClick && onLongClickListener != null){
-                onLongClickListener.onLongClick(NineGridDragFrameLayout.this);
+                onClickListener.onClick(NineGridDragFrameLayout.this);
             }
         }
     };
@@ -65,7 +69,7 @@ public class NineGridDragFrameLayout extends FrameLayout {
         @Override
         public void run() {
             if (canResponseClick && onClickListener != null){
-                onClickListener.onClick(NineGridDragFrameLayout.this);
+                onLongClickListener.onLongClick(NineGridDragFrameLayout.this);
             }
         }
     };
@@ -105,6 +109,14 @@ public class NineGridDragFrameLayout extends FrameLayout {
     private void init(){
         viewDragHelper = ViewDragHelper.create(this,1f,new DragCallback());
         setBackgroundColor(Color.BLACK);
+    }
+
+    /**
+     * 设置拖拽事件的callback
+     * @param callback callback
+     */
+    public void setCallback(IDragCallback callback){
+        this.callback = callback;
     }
 
     /**
@@ -256,6 +268,7 @@ public class NineGridDragFrameLayout extends FrameLayout {
 
         @Override
         public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
+            //恢复黑色背景
             setBackgroundColor(Color.BLACK);
             //显示子view
             for (int i = 1;i < getChildCount();i++){
@@ -269,8 +282,14 @@ public class NineGridDragFrameLayout extends FrameLayout {
             //恢复缩放
             releasedChild.setScaleX(1f);
             releasedChild.setScaleY(1f);
+            //是否需要退出
+            boolean needExit = Math.abs(dragLocationX-originLocationX) > DEFAULT_CALLBACK_DISTANCE
+                    || Math.abs(dragLocationY-originLocationY) > DEFAULT_CALLBACK_DISTANCE;
             viewDragHelper.settleCapturedViewAt(originLocationX, originLocationY);
             postInvalidate();
+            if (needExit && callback != null){
+                callback.exitFullScreen();
+            }
         }
     }
 
